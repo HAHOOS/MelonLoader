@@ -318,7 +318,7 @@ namespace MelonLoader
 
         internal static void Internal_Msg(Color namesection_color, Color txt_color, string namesection, string txt)
         {
-            foreach (string line in txt.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
+            foreach (string line in txt.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None))
             {
                 WriteLogToFile($"[{GetTimeStamp()}] {(namesection is null ? "" : $"[{namesection}] ")}{line}");
 
@@ -340,7 +340,7 @@ namespace MelonLoader
 
         internal static void Internal_PastelMsg(Color namesection_color, Color txt_color, string namesection, string txt)
         {
-            foreach (string line in txt.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
+            foreach (string line in txt.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None))
             {
                 // Regex to check for ANSI
                 string fileTxt = Regex.Replace(line, @"(\x1B|\e|\033)\[(.*?)m", "");
