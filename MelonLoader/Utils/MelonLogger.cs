@@ -318,43 +318,49 @@ namespace MelonLoader
 
         internal static void Internal_Msg(Color namesection_color, Color txt_color, string namesection, string txt)
         {
-            WriteLogToFile($"[{GetTimeStamp()}] {(namesection is null ? "" : $"[{namesection}] ")}{txt}");
-
-            StringBuilder builder = new StringBuilder();
-
-            builder.Append(GetTimestamp(namesection_color == Color.IndianRed && txt_color == Color.IndianRed));
-
-            if (namesection is not null)
+            foreach (string line in txt.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
             {
-                builder.Append("[".Pastel(Color.LightGray));
-                builder.Append(namesection.Pastel(namesection_color));
-                builder.Append("] ".Pastel(Color.LightGray));
-            }
+                WriteLogToFile($"[{GetTimeStamp()}] {(namesection is null ? "" : $"[{namesection}] ")}{line}");
 
-            builder.Append(txt.Pastel(txt_color));
-            Utils.MelonConsole.WriteLine(builder.ToString());
+                StringBuilder builder = new StringBuilder();
+
+                builder.Append(GetTimestamp(namesection_color == Color.IndianRed && txt_color == Color.IndianRed));
+
+                if (namesection is not null)
+                {
+                    builder.Append("[".Pastel(Color.LightGray));
+                    builder.Append(namesection.Pastel(namesection_color));
+                    builder.Append("] ".Pastel(Color.LightGray));
+                }
+
+                builder.Append(line.Pastel(txt_color));
+                Utils.MelonConsole.WriteLine(builder.ToString());
+            }
         }
 
         internal static void Internal_PastelMsg(Color namesection_color, Color txt_color, string namesection, string txt)
         {
-            // Regex to check for ANSI
-            string fileTxt = Regex.Replace(txt, @"(\x1B|\e|\033)\[(.*?)m", "");
-
-            WriteLogToFile($"[{GetTimeStamp()}] {(namesection is null ? "" : $"[{namesection}] ")}{fileTxt}");
-
-            StringBuilder builder = new StringBuilder();
-
-            builder.Append(GetTimestamp(namesection_color == Color.IndianRed && txt_color == Color.IndianRed));
-
-            if (namesection is not null)
+            foreach (string line in txt.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
             {
-                builder.Append("[".Pastel(Color.LightGray));
-                builder.Append(namesection.Pastel(namesection_color));
-                builder.Append("] ".Pastel(Color.LightGray));
-            }
+                // Regex to check for ANSI
+                string fileTxt = Regex.Replace(line, @"(\x1B|\e|\033)\[(.*?)m", "");
 
-            builder.Append(txt.Pastel(txt_color));
-            Utils.MelonConsole.WriteLine(builder.ToString());
+                WriteLogToFile($"[{GetTimeStamp()}] {(namesection is null ? "" : $"[{namesection}] ")}{fileTxt}");
+
+                StringBuilder builder = new StringBuilder();
+
+                builder.Append(GetTimestamp(namesection_color == Color.IndianRed && txt_color == Color.IndianRed));
+
+                if (namesection is not null)
+                {
+                    builder.Append("[".Pastel(Color.LightGray));
+                    builder.Append(namesection.Pastel(namesection_color));
+                    builder.Append("] ".Pastel(Color.LightGray));
+                }
+
+                builder.Append(line.Pastel(txt_color));
+                Utils.MelonConsole.WriteLine(builder.ToString());
+            }
         }
 
         internal static string GetTimestamp(bool error)
