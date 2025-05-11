@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
-using System.IO;
 using bHapticsLib;
 using System.Threading;
 using MelonLoader.Resolver;
@@ -11,7 +9,6 @@ using MelonLoader.Properties;
 using MelonLoader.Melons;
 
 [assembly: MelonLoader.PatchShield]
-
 #pragma warning disable IDE0051 // Prevent the IDE from complaining about private unreferenced methods
 
 namespace MelonLoader
@@ -49,12 +46,11 @@ namespace MelonLoader
             Fixes.ServerCertificateValidation.Install();
 #endif
 
-
             Assertions.LemonAssertMapping.Setup();
 
             MelonUtils.Setup(AppDomain.CurrentDomain);
             MelonAssemblyResolver.Setup();
-            BootstrapInterop.SetDefaultConsoleTitleWithGameName(UnityInformationHandler.GameName, 
+            BootstrapInterop.SetDefaultConsoleTitleWithGameName(UnityInformationHandler.GameName,
                 UnityInformationHandler.GameVersion);
 
 #if NET6_0_OR_GREATER
@@ -108,6 +104,12 @@ namespace MelonLoader
 #endif
 
             PatchShield.Install();
+            if (MelonUtils.CurrentPlatform == MelonPlatformAttribute.CompatiblePlatforms.WINDOWS_X86
+                || MelonUtils.CurrentPlatform == MelonPlatformAttribute.CompatiblePlatforms.WINDOWS_X64)
+            {
+                Fixes.WindowsUnhandledQuit.Install();
+                MelonEvents.OnUpdate.Subscribe(Fixes.WindowsUnhandledQuit.Update, int.MaxValue);
+            }
 
             MelonPreferences.Load();
 
@@ -162,7 +164,7 @@ namespace MelonLoader
 
             return true;
         }
-        
+
         internal static string GetVersionString()
         {
             var lemon = LoaderConfig.Current.Loader.Theme == LoaderConfig.CoreConfig.LoaderTheme.Lemon;
@@ -171,11 +173,11 @@ namespace MelonLoader
                              $"{(Is_ALPHA_PreRelease ? "ALPHA Pre-Release" : "Open-Beta")}";
             return versionStr;
         }
-        
+
         internal static void WelcomeMessage()
         {
             //if (MelonDebug.IsEnabled())
-                MelonLogger.WriteSpacer();
+            MelonLogger.WriteSpacer();
 
             MelonLogger.MsgDirect("------------------------------");
             MelonLogger.MsgDirect(GetVersionString());
@@ -200,7 +202,7 @@ namespace MelonLoader
         internal static void Quit()
         {
             MelonDebug.Msg("[ML Core] Received Quit Request! Shutting down...");
-            
+
             MelonPreferences.Save();
 
             HarmonyInstance.UnpatchSelf();
